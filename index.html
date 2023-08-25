@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jade Twinkle Dimaond Rejection Tool</title>
+</head>
+<body>
+  <h1>JT - Diamond Rejection Tool</h1>
+  
+  <label for="crownAngle">Enter Crown Angle:</label>
+  <input type="number" id="crownAngle" step="0.5" min="21.5" max="40.5"><br><br>
+  
+  <label for="pavilionAngle">Enter Pavilion Angle:</label>
+  <input type="number" id="pavilionAngle" step="0.1" min="38.6" max="43.2"><br><br>
+
+  <label for="table">Enter Table %:</label>
+  <input type="number" id="table"><br><br>
+
+  <label for="depth">Enter Depth %:</label>
+  <input type="number" id="depth"><br><br>
+
+  
+  
+  <button onclick="calculate()">Calculate</button>
+  
+  <p id="result"></p>
+  
+  
+  
+  <script>
+    const diamondData = [
+["P","P","F","F","F","F","F","F","F","F","F","F","F","F","F","F","F","F","F","F","F","F","F","F","P","P","P","P","P","P","P","P","F","P","P","P","P","P","F"],
+["P","P","F","F","F","F","F","F","F","F","F","F","F","F","F","F","F","F","F","F","F","F","P","P","P","P","P","P","P","P","P","P","F","P","P","P","P","F","F"],
+["P","P","F","F","F","F","F","F","F","F","F","F","F","F","F","F","F","F","F","F","F","P","P","P","P","P","P","P","P","P","P","F","F","P","P","P","F","F","F"],
+["P","F","F","F","F","F","F","F","F","F","F","F","F","F","F","F","F","F","F","F","P","P","P","P","P","P","P","P","P","P","F","F","F","P","P","F","F","F","F"],
+["P","F","F","F","F","F","F","F","F","F","F","F","F","F","F","F","F","F","F","P","P","P","P","P","P","P","P","P","P","P","F","F","F","P","F","F","F","F","F"],
+["F","F","F","F","F","F","F","F","F","F","F","F","F","F","F","F","F","F","P","P","P","P","P","P","P","P","P","P","P","F","F","F","F","F","F","F","F","F","F"],
+["F","F","F","F","F","F","F","F","F","F","F","F","F","F","F","F","F","P","P","P","P","P","P","P","P","P","P","P","P","F","F","F","F","F","F","F","F","F","F"],
+["F","F","F","F","F","F","F","G","G","G","F","F","F","F","F","F","F","P","P","P","P","P","P","P","P","P","F","F","F","F","G","F","F","F","F","G","G","G","G"],
+["F","F","F","F","F","F","F","F","G","F","F","F","F","F","F","F","P","P","P","P","P","P","P","P","P","P","F","F","F","F","G","G","F","F","G","G","G","G","G"],
+["F","F","F","F","F","F","F","F","F","F","F","F","F","F","F","P","P","P","P","P","P","P","P","P","P","F","F","F","F","G","G","F","F","G","G","G","G","G","G"],
+["F","F","F","F","F","F","F","F","F","F","F","F","F","F","P","P","P","P","P","P","P","P","P","P","P","F","F","F","G","G","G","G","G","G","G","G","G","G","G"],
+["F","F","G","G","G","G","G","G","G","F","F","F","F","F","P","P","P","P","P","P","P","P","F","F","F","F","G","G","G","VG","VG","G","G","VG","VG","VG","G","G","G"],
+["F","F","G","G","G","G","G","G","G","F","F","F","F","P","P","P","P","P","P","P","P","P","F","F","F","G","G","G","VG","VG","VG","G","VG","VG","VG","VG","G","G","G"],
+["F","F","G","G","G","G","G","G","F","F","F","F","F","P","P","P","P","P","P","P","P","F","F","F","G","G","G","VG","VG","VG","VG","VG","VG","VG","VG","VG","G","G","G"],
+["F","G","G","G","G","G","G","F","F","F","F","F","P","P","P","P","P","P","P","P","F","F","F","F","G","G","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","G","G","G"],
+["F","G","G","G","G","G","F","F","F","F","F","P","P","P","P","P","P","P","P","F","F","F","F","G","G","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","G","G","G"],
+["G","G","G","G","G","F","F","F","F","F","F","P","P","P","P","P","P","P","F","F","F","F","G","G","VG","VG","EX","EX","EX","EX","VG","VG","VG","VG","VG","VG","G","G","G"],
+["G","G","G","G","F","F","F","F","F","F","P","P","P","P","P","P","P","F","F","F","F","G","G","G","VG","EX","EX","EX","EX","EX","VG","VG","VG","VG","VG","G","G","G","G"],
+["G","G","G","F","F","F","F","F","F","P","P","P","P","P","P","P","F","F","F","F","G","G","G","VG","VG","EX","EX","EX","EX","EX","VG","VG","VG","VG","VG","G","G","G","G"],
+["G","F","F","F","F","F","F","F","F","P","P","P","P","P","P","F","F","F","F","G","G","G","VG","VG","EX","EX","EX","Ideal","EX","EX","VG","VG","VG","VG","G","G","G","G","G"],
+["F","F","F","F","F","F","F","F","P","P","P","P","P","P","F","F","F","F","G","G","G","VG","VG","EX","EX","EX","Ideal","Ideal","EX","EX","VG","VG","VG","G","G","G","G","G","G"],
+["F","F","F","F","F","F","F","F","P","P","P","P","P","F","F","F","F","G","G","G","VG","VG","EX","EX","EX","Ideal","Ideal","Ideal","EX","VG","VG","VG","G","G","G","G","G","G","G"],
+["F","F","F","F","F","F","F","F","P","P","P","F","F","F","F","F","G","G","G","VG","VG","VG","EX","EX","Ideal","Ideal","Ideal","Ideal","EX","VG","VG","VG","G","G","G","G","G","G","G"],
+["F","F","F","F","F","F","F","F","P","P","F","F","F","F","F","G","G","G","VG","VG","VG","EX","EX","EX","Ideal","Ideal","Ideal","EX","VG","VG","VG","G","G","G","G","G","G","G","F"],
+["F","F","F","F","F","F","F","F","F","F","F","F","F","F","G","G","G","VG","VG","VG","EX","EX","EX","Ideal","Ideal","Ideal","Ideal","EX","VG","VG","G","G","G","G","G","G","G","F","P"],
+["F","F","F","F","F","F","F","F","F","F","F","F","F","G","G","G","VG","VG","VG","EX","EX","EX","Ideal","Ideal","Ideal","Ideal","Ideal","VG","VG","G","G","G","G","G","G","G","F","F","P"],
+["F","F","F","F","F","F","F","F","F","F","F","F","G","G","G","VG","VG","VG","EX","EX","EX","Ideal","Ideal","Ideal","Ideal","Ideal","EX","VG","VG","G","G","G","G","G","G","G","F","P","F"],
+["F","F","F","F","F","F","F","F","F","F","F","G","G","G","VG","VG","VG","EX","EX","EX","EX","Ideal","Ideal","Ideal","Ideal","EX","EX","VG","G","G","G","G","G","G","G","F","P","P","F"],
+["F","F","F","F","F","F","F","F","F","F","G","G","G","VG","VG","VG","EX","EX","EX","EX","Ideal","Ideal","Ideal","Ideal","EX","EX","VG","VG","G","G","G","G","G","G","F","P","P","P","F"],
+["F","F","F","F","F","F","F","F","F","G","G","G","VG","VG","VG","EX","EX","EX","EX","Ideal","Ideal","Ideal","Ideal","EX","EX","EX","VG","G","G","G","G","G","G","G","P","P","P","F","F"],
+["F","F","F","F","F","F","F","F","G","G","G","VG","VG","VG","EX","EX","EX","EX","EX","Ideal","Ideal","Ideal","EX","EX","EX","VG","G","G","G","G","G","G","G","F","P","P","P","F","F"],
+["F","F","F","F","F","F","F","G","G","G","VG","VG","VG","EX","EX","EX","EX","EX","EX","Ideal","Ideal","EX","EX","EX","EX","VG","G","G","G","G","G","G","F","P","P","P","P","F","F"],
+["F","F","F","F","F","G","G","G","G","G","VG","VG","VG","EX","EX","EX","EX","EX","EX","Ideal","EX","EX","EX","EX","EX","G","G","G","G","G","G","F","F","F","P","P","F","F","F"],
+["F","F","F","F","G","G","G","G","G","VG","VG","VG","EX","EX","EX","EX","EX","EX","EX","EX","EX","EX","EX","EX","EX","G","G","G","G","G","G","F","F","F","F","F","F","F","F"],
+["F","F","F","G","G","G","G","G","VG","VG","VG","VG","EX","EX","EX","EX","EX","EX","EX","EX","EX","EX","EX","EX","VG","G","G","G","G","G","F","F","F","F","F","F","F","F","F"],
+["F","F","G","G","G","G","G","VG","VG","VG","VG","EX","EX","EX","EX","EX","EX","EX","EX","EX","EX","EX","EX","EX","G","G","G","G","G","F","F","F","F","F","F","F","F","F","F"],
+["G","G","G","G","G","G","VG","VG","VG","VG","VG","EX","EX","EX","EX","EX","EX","EX","EX","EX","VG","VG","VG","VG","G","G","G","G","F","F","F","F","F","F","F","F","F","F","F"],
+["G","G","G","G","G","G","VG","VG","VG","VG","VG","EX","EX","EX","EX","EX","EX","EX","EX","VG","VG","VG","VG","G","G","G","G","F","F","F","F","F","F","F","F","F","F","F","F"],
+["G","G","G","G","G","VG","VG","VG","VG","VG","VG","EX","EX","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","G","G","G","G","F","F","F","F","F","F","F","F","F","F","F","F"],
+["G","G","G","G","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","G","G","G","F","F","F","F","F","F","F","F","F","F","F","F","F"],
+["G","G","G","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","G","G","G","F","F","F","F","F","F","F","F","F","F","F","F","F","F"],
+["G","G","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","G","G","F","F","F","F","F","F","F","F","F","F","F","F","F","F","P"],
+["G","G","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","G","F","F","F","F","F","F","F","F","F","F","F","F","F","F","P","P"],
+["G","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","G","F","F","F","F","F","F","F","F","F","F","F","F","F","P","P","P","P"],
+["VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","VG","G","F","F","F","F","F","F","F","F","F","F","F","F","P","P","P","P","P"],
+["VG","VG","VG","VG","VG","VG","VG","G","G","G","G","G","G","G","G","G","G","G","G","G","G","F","F","F","F","F","F","F","F","F","P","P","P","P","P","P","P","P","P"],
+["VG","VG","VG","VG","VG","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","F","F","F","F","F","F","F","P","P","P","P","P","P","P","P","P","P","P"]];
+
+    function calculate() {
+      const crownAngleInput = parseFloat(document.getElementById("crownAngle").value);
+      const pavilionAngleInput = parseFloat(document.getElementById("pavilionAngle").value);
+      
+      if (isNaN(crownAngleInput) || isNaN(pavilionAngleInput)) {
+        document.getElementById("result").textContent = "Please enter valid angles.";
+        return;
+      }
+
+      const crownIndex = Math.round((crownAngleInput - 21.5) / 0.5);
+      const pavilionIndex = Math.round((pavilionAngleInput - 38.6) / 0.1);
+
+      if (crownIndex >= 0 && crownIndex < diamondData[0].length && pavilionIndex >= 0 && pavilionIndex < diamondData.length) {
+        const result = diamondData[pavilionIndex][crownIndex];
+        document.getElementById("result").textContent = `Result: ${result}`;
+      } else {
+        document.getElementById("result").textContent = "Angles are out of range.";
+      }
+    }
+  </script>
+</body>
+</html>
